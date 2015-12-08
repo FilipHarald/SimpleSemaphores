@@ -172,6 +172,41 @@ public class GUISemaphore
 		btnDeliver.addActionListener(bL);
 	}
 	
+	public void updateTruckCargo(String name) {
+		if(name == ""){
+			lstTruck.setText("");			
+		}else{
+			lstTruck.append(name);
+		}
+		
+	}
+	
+	public void updateStorageProgress(int percentage) {
+		bufferStatus.setValue(percentage);
+	}
+	
+	public void updateFactoryStatus(int factoryNbr, String status) {
+		if(factoryNbr == 0){
+			lblAStatus.setText(status);
+		}else{
+			lblBStatus.setText(status);
+		}
+	}
+	
+	public void setTruckLimits(int maxW, int maxV, int maxItems) {
+		lblLimWeight.setText("" + maxV);
+		lblLimVolume.setText("" + maxW);
+		if(maxItems == 0){
+			lblLimNrs.setText("No limit");	
+		}else{		  
+			lblLimNrs.setText("" + maxV);	
+		}
+	}
+	
+	public void updateTruckStatus(String status) {
+		lblTruckStatus.setText(status);
+	}
+	
 	public void updateCargoList(String s){
 		if(s == ""){
 			lstTruck.setText("");
@@ -196,4 +231,5 @@ public class GUISemaphore
 			}
 		}
 	}
+
 }

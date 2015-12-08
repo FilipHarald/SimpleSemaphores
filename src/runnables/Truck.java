@@ -29,6 +29,7 @@ public class Truck implements Runnable{
 			currentWeight += item.getWeight();
 			currentVolume += item.getVolume();
 			item = storage.peekNextItem();
+			Thread.sleep(500);
 			if(currentWeight + item.getWeight() > maxWeight || currentVolume + item.getVolume() > maxVolume){
 				full = true;
 			}else{				
@@ -47,7 +48,7 @@ public class Truck implements Runnable{
 	public void run() {
 		try {
 			fillTruck();
-			Thread.sleep(50000);
+			Thread.sleep(5000);
 			emptyTruck();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
