@@ -37,12 +37,21 @@ public class Truck implements Runnable{
 		}
 	}
 	
+	private void emptyTruck() {
+		cargo = new LinkedList<FoodItem>();
+		currentWeight = 0; 
+		currentVolume = 0;
+	}
+	
 	@Override
 	public void run() {
 		try {
 			fillTruck();
+			Thread.sleep(50000);
+			emptyTruck();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
+
 }

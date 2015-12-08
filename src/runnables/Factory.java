@@ -10,7 +10,7 @@ public class Factory implements Runnable{
 	private Storage storage;
 	private Random rand;
 	
-	public Factory(String name, Storage storage){
+	public Factory(Storage storage){
 		if(Factory.items[0] == null){			
 			items[0] = new FoodItem(1.1, 0.5, "Milk");
 			items[1] = new FoodItem(0.6, 1.1, "Cream");

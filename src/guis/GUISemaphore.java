@@ -171,6 +171,15 @@ public class GUISemaphore
 		btnStopB.addActionListener(bL);
 		btnDeliver.addActionListener(bL);
 	}
+	
+	public void updateCargoList(String s){
+		if(s == ""){
+			lstTruck.setText("");
+		}else{
+			lstTruck.append(s);
+		}
+	}
+	
 	private class ButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
