@@ -2,6 +2,7 @@ package runnables;
 import java.util.LinkedList;
 
 import entities.*;
+import guis.Controller;
 
 
 public class Truck implements Runnable{
@@ -11,28 +12,38 @@ public class Truck implements Runnable{
 	private final double maxVolume;
 	private double currentWeight;
 	private double currentVolume;
+	private Controller controller;
 	
-	public Truck(Storage s, double maxWeight, double maxVolume){
+	public Truck(Storage s, double maxWeight, double maxVolume, Controller controller){
 		storage = s;
 		cargo = new LinkedList<FoodItem>();
 		this.maxWeight = maxWeight;
 		this.maxVolume = maxVolume;
 		currentWeight = 0;
 		currentVolume = 0;
+		this.controller = controller;
 	}
 	
 	private void fillTruck() throws InterruptedException{
 		boolean full = false;
+		controller.updateTruckStatus("Waiting...");
 		FoodItem item = storage.getFoodItem();
 		while(!full){
+			controller.updateTruckStatus("Loading...");
+			Thread.sleep(500); // It takes time to load an item on to the truck...
 			cargo.add(item);
+			controller.updateTruckCargo(item.getName());
 			currentWeight += item.getWeight();
 			currentVolume += item.getVolume();
+			controller.updateTruckStatus("Waiting...");
 			item = storage.peekNextItem();
-			Thread.sleep(500);
-			if(currentWeight + item.getWeight() > maxWeight || currentVolume + item.getVolume() > maxVolume){
+			if(currentWeight + item.getWeight() > maxWeight){
+				controller.updateTruckStatus("Max weight");
 				full = true;
-			}else{				
+			}else if(currentVolume + item.getVolume() > maxVolume){
+				controller.updateTruckStatus("Max volume");
+				full = true;
+			}else{	
 				item = storage.getFoodItem();
 			}
 		}
@@ -40,6 +51,7 @@ public class Truck implements Runnable{
 	
 	private void emptyTruck() {
 		cargo = new LinkedList<FoodItem>();
+		controller.updateTruckCargo("");
 		currentWeight = 0; 
 		currentVolume = 0;
 	}
@@ -47,9 +59,15 @@ public class Truck implements Runnable{
 	@Override
 	public void run() {
 		try {
-			fillTruck();
-			Thread.sleep(5000);
-			emptyTruck();
+			while(!Thread.interrupted()){
+				fillTruck(); // The driver fills the truck
+				System.out.println("Truck driving to ICA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				controller.setTruckDelivering(true);
+				Thread.sleep(300); //The truck drives to ICA 
+				emptyTruck(); //The Truck empties at ICA
+				controller.setTruckDelivering(false);
+				Thread.sleep(300); //The truck drives back to storage
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -127,6 +127,7 @@ public class GUISemaphore
 		lblDeliver.setFont(new Font("Dejavu Sans", Font.BOLD, 20));
 		lblDeliver.setForeground(Color.RED);
 		lblDeliver.setBounds(133, 237, 200, 25);
+		lblDeliver.setVisible(false); // Not showing at start
 		pnlICA.add(lblDeliver);
 		
 		// Static text in Food Factory B
@@ -176,7 +177,7 @@ public class GUISemaphore
 		if(name == ""){
 			lstTruck.setText("");			
 		}else{
-			lstTruck.append(name);
+			lstTruck.append(name + "\n");
 		}
 		
 	}
@@ -207,12 +208,8 @@ public class GUISemaphore
 		lblTruckStatus.setText(status);
 	}
 	
-	public void updateCargoList(String s){
-		if(s == ""){
-			lstTruck.setText("");
-		}else{
-			lstTruck.append(s);
-		}
+	public void setTruckDelivering(boolean delivering){
+		lblDeliver.setVisible(delivering);	
 	}
 	
 	private class ButtonListener implements ActionListener {

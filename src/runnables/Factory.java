@@ -2,6 +2,7 @@ package runnables;
 import java.util.Random;
 
 import entities.*;
+import guis.Controller;
 
 
 public class Factory implements Runnable{
@@ -9,8 +10,10 @@ public class Factory implements Runnable{
 	private String name;
 	private Storage storage;
 	private Random rand;
+	private Controller controller;
 	
-	public Factory(Storage storage){
+	public Factory(Controller controller, Storage storage, String name){
+		rand = new Random();
 		if(Factory.items[0] == null){			
 			items[0] = new FoodItem(1.1, 0.5, "Milk");
 			items[1] = new FoodItem(0.6, 1.1, "Cream");
@@ -25,18 +28,24 @@ public class Factory implements Runnable{
 		}
 		this.name = name;
 		this.storage = storage;
+		this.controller = controller;
 	}
 	
 	public FoodItem produceFoodItem() throws InterruptedException{
-		Thread.sleep(rand.nextInt(2000) + 1000);
-		return items[rand.nextInt(items.length)];
+		Thread.sleep(rand.nextInt(1000));
+		FoodItem item = items[rand.nextInt(items.length)];
+		System.out.println("Factory " + name + " producing " + item);
+		return item;
 	}
 
 	@Override
 	public void run() {
 		try {
 			while(!Thread.interrupted()){
-				storage.addFoodItem(this.produceFoodItem());
+				controller.updateFactoryStatus(Integer.parseInt(name), "Working");
+				FoodItem item = this.produceFoodItem();
+				controller.updateFactoryStatus(Integer.parseInt(name), "Waiting");
+				storage.addFoodItem(item);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

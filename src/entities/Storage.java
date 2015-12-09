@@ -3,56 +3,55 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import guis.Controller;
+
 
 public class Storage {
 
-	private final Semaphore loadingDocks = new Semaphore(1, true);
+	private final Semaphore write;
+	private final Semaphore read;
 	private Queue<FoodItem> items = new LinkedList<FoodItem>();
-	private final double maxWeight;
-	private final double maxVolume;
-	private final int maxItems;
-	private double currentWeight;
-	private double currentVolume;
-	private int currentItems;
+	private Object lock = new Object();
+	private Controller controller;
+	private int maxItems;
 
 
-	public Storage(double maxWeight, double maxVolume, int maxItems) {
-		this.maxWeight = maxWeight;
-		this.maxVolume = maxVolume;
+	public Storage(int maxItems, Controller controller) {
+		write = new Semaphore(maxItems, true);
+		read = new Semaphore(0, true);
+		this.controller = controller;
 		this.maxItems = maxItems;
-		currentWeight = 0;
-		currentVolume = 0;
-		currentItems = 0;
 	}
 	
-	public boolean addFoodItem(FoodItem item) throws InterruptedException {
-		boolean itemAdded = false;
-		loadingDocks.acquire();
-		if(currentWeight + item.getWeight() < maxWeight && currentVolume + item.getVolume() < maxVolume && currentItems + 1 < maxItems){			
+	public int getStorageProgress(){
+		return read.availablePermits();
+	}
+	
+	public void addFoodItem(FoodItem item) throws InterruptedException {
+		write.acquire();
+		synchronized(lock){					
 			items.add(item);
-			currentWeight += item.getWeight();
-			currentVolume += item.getVolume();
-			currentItems++;
-			itemAdded =true;
 		}
-		loadingDocks.release();
-		return itemAdded;
-	}
-	
-	/**Checks if there if an FoodItem in the queue and if so, returns the item. Does not remove the item from the list.
-	 * @return
-	 */
-	
-	public FoodItem peekNextItem(){
-		return items.peek();
+		controller.updateStorageProgress(getStorageProgress());
+		read.release();
 	}
 	
 	public FoodItem getFoodItem() throws InterruptedException{
-		loadingDocks.acquire();
-		FoodItem temp = items.poll();
-		currentWeight -= temp.getWeight();
-		currentVolume -= temp.getVolume();
-		loadingDocks.release();
+		FoodItem temp;
+		read.acquire();
+		synchronized(lock){
+			temp = items.poll();
+			System.out.println("Truck takes " + temp + " from storage");
+		}
+		controller.updateStorageProgress(getStorageProgress());
+		write.release();
+		return temp;
+	}
+
+	public FoodItem peekNextItem() throws InterruptedException {
+		read.acquire();
+		FoodItem temp = items.peek();
+		read.release();
 		return temp;
 	}
 	

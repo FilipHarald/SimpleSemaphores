@@ -10,11 +10,12 @@ public class Controller {
 
 	public Controller(GUISemaphore guiSemaphore) {
 		this.gui = guiSemaphore;
-		this.storage = new Storage(100, 100, 300);
+		this.storage = new Storage(100, this);
+		factoryThreads = new Thread[2];
 	}
 
 	public void startFactory(int i) {
-		factoryThreads[i] = new Thread(new Factory(storage));
+		factoryThreads[i] = new Thread(new Factory(this, storage, "" + i));
 		factoryThreads[i].start();
 	}
 	
@@ -25,14 +26,14 @@ public class Controller {
 
 	public void startDelivering() {
 		int maxW = 20;
-		int maxV = 20;
-		new Thread(new Truck(storage, maxW, maxV)).start();
+		int maxV = 8;
+		new Thread(new Truck(storage, maxW, maxV, this)).start();
 		gui.setTruckLimits(maxW, maxV, 0);
 		
 	}
 	
-	public void updateTruckCargo(FoodItem item){
-		gui.updateTruckCargo(item.getName());
+	public void updateTruckCargo(String itemName){
+		gui.updateTruckCargo(itemName);
 	}
 	
 	/**
@@ -48,5 +49,8 @@ public class Controller {
 	
 	public void updateTruckStatus(String status){
 		gui.updateTruckStatus(status);
+	}
+	public void setTruckDelivering(boolean delivering){
+		gui.setTruckDelivering(delivering);	
 	}
 }
