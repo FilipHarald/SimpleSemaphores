@@ -6,6 +6,10 @@ import java.util.concurrent.Semaphore;
 import guis.Controller;
 
 
+/**Represents a storage for adding and getting food items. using semaphores to not overextend the limit of the storage.
+ * @author Filip
+ *
+ */
 public class Storage {
 
 	private final Semaphore write;
@@ -23,10 +27,17 @@ public class Storage {
 		this.maxItems = maxItems;
 	}
 	
+	/**
+	 * @return how many percentages of max limit the storage is.
+	 */
 	public int getStorageProgress(){
 		return read.availablePermits();
 	}
 	
+	/**Adds a food item. If the storage is full this blocks the thread until there is room in the storage.
+	 * @param item
+	 * @throws InterruptedException
+	 */
 	public void addFoodItem(FoodItem item) throws InterruptedException {
 		write.acquire();
 		synchronized(lock){					
@@ -36,6 +47,10 @@ public class Storage {
 		read.release();
 	}
 	
+	/**Gets the first food item in the storage and removes it from storage. If the storage is empty this blocks the thread until there is a food item available.
+	 * @return The first food item in storage
+	 * @throws InterruptedException
+	 */
 	public FoodItem getFoodItem() throws InterruptedException{
 		FoodItem temp;
 		read.acquire();
@@ -48,6 +63,10 @@ public class Storage {
 		return temp;
 	}
 
+	/**Peeks at the first available item in the list. If the storage is empty this blocks the thread until there is a food item available.
+	 * @return The first food item in storage
+	 * @throws InterruptedException
+	 */
 	public FoodItem peekNextItem() throws InterruptedException {
 		read.acquire();
 		FoodItem temp = items.peek();

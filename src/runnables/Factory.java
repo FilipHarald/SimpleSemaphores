@@ -5,6 +5,10 @@ import entities.*;
 import guis.Controller;
 
 
+/**Representing a factoy producing random food items.
+ * @author Filip
+ *
+ */
 public class Factory implements Runnable{
 	private static FoodItem[] items = new FoodItem[10];
 	private String name;
@@ -31,6 +35,10 @@ public class Factory implements Runnable{
 		this.controller = controller;
 	}
 	
+	/**Produces a random food item.
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public FoodItem produceFoodItem() throws InterruptedException{
 		Thread.sleep(rand.nextInt(1000));
 		FoodItem item = items[rand.nextInt(items.length)];

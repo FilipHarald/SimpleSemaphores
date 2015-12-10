@@ -5,6 +5,10 @@ import entities.*;
 import guis.Controller;
 
 
+/**Represents a truck
+ * @author Filip
+ *
+ */
 public class Truck implements Runnable{
 	private Storage storage;
 	private LinkedList<FoodItem> cargo;
@@ -24,6 +28,9 @@ public class Truck implements Runnable{
 		this.controller = controller;
 	}
 	
+	/**Fills the truck with items from the storage. Ends when one of the trucks limit is reached. 
+	 * @throws InterruptedException
+	 */
 	private void fillTruck() throws InterruptedException{
 		boolean full = false;
 		controller.updateTruckStatus("Waiting...");
@@ -49,6 +56,9 @@ public class Truck implements Runnable{
 		}
 	}
 	
+	/**Empties the Truck
+	 * 
+	 */
 	private void emptyTruck() {
 		cargo = new LinkedList<FoodItem>();
 		controller.updateTruckCargo("");
