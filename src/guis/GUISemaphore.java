@@ -171,6 +171,9 @@ public class GUISemaphore
 		btnStartB.addActionListener(bL);
 		btnStopB.addActionListener(bL);
 		btnDeliver.addActionListener(bL);
+		
+		btnStopA.setEnabled(false);
+		btnStopB.setEnabled(false);
 	}
 	
 	public void updateTruckCargo(String name) {
@@ -217,12 +220,20 @@ public class GUISemaphore
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == btnStartA){
 				controller.startFactory(0);
+				btnStopA.setEnabled(true);
+				btnStartA.setEnabled(false);
 			}else if(e.getSource() == btnStopA){
 				controller.stopFactory(0);
+				btnStartB.setEnabled(true);
+				btnStopB.setEnabled(false);
 			}else if(e.getSource() == btnStartB){
 				controller.startFactory(1);
+				btnStopB.setEnabled(true);
+				btnStartB.setEnabled(false);
 			}else if(e.getSource() == btnStopB){
 				controller.stopFactory(1);
+				btnStopB.setEnabled(false);
+				btnStartB.setEnabled(true);
 			}else if(e.getSource() == btnDeliver){
 				controller.startDelivering();
 			}
