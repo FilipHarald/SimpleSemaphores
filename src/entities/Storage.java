@@ -42,8 +42,8 @@ public class Storage {
 		write.acquire();
 		synchronized(lock){					
 			items.add(item);
+			controller.updateStorageProgress(getStorageProgress());
 		}
-		controller.updateStorageProgress(getStorageProgress());
 		read.release();
 	}
 	
@@ -57,8 +57,8 @@ public class Storage {
 		synchronized(lock){
 			temp = items.poll();
 			System.out.println("Truck takes " + temp + " from storage");
+			controller.updateStorageProgress(getStorageProgress());
 		}
-		controller.updateStorageProgress(getStorageProgress());
 		write.release();
 		return temp;
 	}

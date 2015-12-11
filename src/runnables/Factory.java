@@ -40,7 +40,7 @@ public class Factory implements Runnable{
 	 * @throws InterruptedException
 	 */
 	public FoodItem produceFoodItem() throws InterruptedException{
-		Thread.sleep(rand.nextInt(1000));
+		Thread.sleep(rand.nextInt(10));
 		FoodItem item = items[rand.nextInt(items.length)];
 		System.out.println("Factory " + name + " producing " + item);
 		return item;
